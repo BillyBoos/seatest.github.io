@@ -1,0 +1,98 @@
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+	background: #030303;
+}
+
+.countdown {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.time-section {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	font-family: sans-serif;
+	padding: 0 30px;
+	border-right: 1px solid #fff;
+	user-select: none;
+}
+
+.time-section:last-child {
+	border: none;
+}
+
+.count {
+	font-size: 50px;
+}
+
+.units {
+	font-size: 15px;
+}
+
+    <style>
+        .countdown-container {
+            position: relative;
+            z-index: 1; /* Убедитесь, что этот z-index выше, чем у анимации в rgba.js */
+        }
+
+        .countdown {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+.combined-container {
+    position: relative;
+    z-index: 1;
+}
+
+.countdown {
+    position: fixed;
+    top: 4cm;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 2, 2, 0.7);
+    z-index: 2;
+}
+
+.animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+.snowflake {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: falling-snow linear infinite;
+}
+
+@keyframes falling-snow {
+    0% {
+        transform: translateY(-100vh);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}

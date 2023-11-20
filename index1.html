@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="https://raw.githack.com/strangerintheq/rgba/0.0.5/rgba.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Чтобы контейнер со временем занимал весь экран */
+            background-color: black; /* Устанавливаем черный фон */
+        }
+
+        .combined-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .countdown {
+            position: fixed;
+            top: 4cm; /* Поднимаем контейнер на 4 сантиметра (3 сантиметра + еще 1 сантиметр) */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(206, 15, 15, 0,7); /* Прозрачность 70% */
+            z-index: 2; /* Установите более высокий z-index для контейнера с временем */
+        }
+
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 3; /* Установите более низкий z-index для контейнера с анимацией */
+        }
+
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: falling-snow linear infinite;
+        }
+
+        @keyframes falling-snow {
+            0% {
+                transform: translateY(-100vh);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="combined-container">
+    <div class="countdown">
+        <div class="time-section">
+            <span class="count" id="days"></span>
+            <span class="units">Дней</span>
+        </div>
+        <div class="time-section">
+            <span class="count" id="hours"></span>
+            <span class="units">Часов</span>
+        </div>
+        <div class="time-section">
+            <span class="count" id="minutes"></span>
+            <span class="units">Минут</span>
+        </div>
+        <div class="time-section">
+            <span class="count" id="seconds"></span>
+            <span class="units">Секунд</span>
+        </div>
+    </div>
+
+    <div class="animation-container">
+        <script>
+            RGBA(`
+                vec2 uv = gl_FragCoord.xy/resolution - 0.5;
+                uv.x *= resolution.x/resolution.y;
+                if (uv.x > 0.0) uv.y = -uv.y;
+
+                float r = 0.05*cos(2.0*atan(uv.y, uv.x));
+                float d = dot(uv, uv);
+                float s = 0.0003/sqrt(d);
+                float c = 1.0 - smoothstep(r, r+s, d)
+                            - smoothstep(r, r-s, d);
+                
+                gl_FragColor = vec4(c, c, c, 1.0);
+
+                vec3 p = vec3(0.5, 0.2, 0.33);
+                r = sqrt(r);
+                d = pow(d, 0.2) * 25.0;
+
+                for (float i = 1e-6; i < 1.0; i += 0.05) {
+                    float t = 1.0 + time*1.5 + i;
+                    vec2 uv2 = uv + vec2(cos(t), sin(t)) * r;
+                    vec3 color = vec3(sin(t*4.0), cos(t*3.0), sin(t*7.0));
+                    c = smoothstep(i/d, 0.0, length(uv2));
+                    gl_FragColor += vec4(p * (1.0 + color) * c, 1.);   
+                }
+            `);
+
+            // Добавляем снегопад с помощью JavaScript
+            const snowflakesContainer = document.querySelector('.animation-container');
+            const numberOfSnowflakes = 50;
+
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = Math.random() * 10 + 5 + 's'; // Удвоенное значение для замедления
+                snowflake.style.width = Math.random() * 20 + 5 + 'px'; // Разные размеры
+                snowflake.style.height = snowflake.style.width;
+                snowflakesContainer.appendChild(snowflake);
+            }
+        </script>
+    </div>
+</div>
+
+</body>
+</html>
